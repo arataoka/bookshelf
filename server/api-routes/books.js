@@ -1,45 +1,42 @@
 import express from "express";
-import {Book} from "../models/books.js"
+import {body} from "express-validator";
+import {deleteBook, getAllBooks, getBook, registBook, updateBook} from "../controllers/books.js";
+import {requestErrorHandler} from "../helpers/errorHandler.js";
 
 const router = express.Router();
 
 // /api/books
-router.get("/", async (req,res)=>{
-    const books = await Book.find().sort({updatedAt:-1}); // 降順全て取得
-    res.json(books);
-})
+router.get("/", requestErrorHandler(getAllBooks))
 
-router.get("/:id", async (req,res)=>{
-    const _id = req.params.id; // queryから取得
-    // const book = await Book.findOne({_id});
-    const book = await Book.findById(_id);
-    res.json(book);
+router.get("/:id", requestErrorHandler(getBook))
 
-})
+router.delete("/:id", deleteBook)
 
-router.delete("/:id", async (req,res)=>{
-    const _id = req.params.id; // queryから取得
-    const book = await Book.findByIdAndDelete(_id);
-    res.json({"msg":`${book.title} is deleted`});
-})
-
-router.patch("/:id", async (req,res)=>{
-    const {title,description,comment,rating} = req.body;
-    const _id = req.params.id; // queryから取得
-    const book = await Book.findById(_id);
-    book.title = title;
-    book.description = description;
-    book.comment = comment;
-    book.rating = rating;
-    await book.save();
-    res.json(book);
-})
+// https://github.com/validatorjs/validator.js
+router.patch("/:id",
+    body('title').optional().notEmpty(),
+    body('description').optional().notEmpty(),
+    body('comment').optional().notEmpty(),
+    body('rating').optional().notEmpty().isInt({min: 1, max: 5})
+    , updateBook)
 
 
-router.post("/", async (req,res)=>{
-    const book = new Book(req.body);
-    const newBook = await book.save();
-    res.json(newBook)
-})
+// router.post('/', body('title').notEmpty().withMessage('タイトルが空です'));
+// router.post("/", body('title').notEmpty().withMessage('タイトルが空です'),async (req,res)=>{
+//     const errors = validationResult(req);
+//     if(!errors.isEmpty()){
+//        const errs = errors.array();
+//       return res.status(400).json(errs);
+//     }
+//     const book = new Book(req.body);
+//     const newBook = await book.save();
+//     res.json(newBook)
+// })
+router.post("/",
+    // body('title').notEmpty(),
+    // body('description').notEmpty(),
+    // body('comment').notEmpty(),
+    // body('rating').notEmpty().isInt({min: 1, max: 5}),
+    registBook);
 
-export default  router;
+export default router;

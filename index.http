@@ -13,24 +13,21 @@ POST http://localhost:8080/api/books
 content-type: application/json
 
 {
-  "title": "潮騒",
+  "title": "a",
   "description": "三島由紀夫",
-  "rating": 5,
+  "rating": 6,
   "comment": "爽やか1"
 }
 
 ###
-GET http://localhost:8080/api/books/6333eb01c73723402b0796af
+GET http://localhost:8080/api/books/633548e692df1eddeed375d6
 
 ###
 PATCH http://localhost:8080/api/books/6348cb2360bfbbb3b24b6ffc
 content-type: application/json
 
 {
-  "title": "UPDATEDごんぎつね4",
-  "description": "これは、わたしが小さいときに、村の茂兵（もへい）というおじいさんからきいたお話です。",
-  "rating": 5,
-  "comment": "とても悲しい。編集しました。"
+  "title": "更新します"
 }
 
 ###
