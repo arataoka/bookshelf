@@ -1,12 +1,18 @@
 import express from "express";
 import apiRoutes from "./api-routes/index.js"
 import "./helpers/db.js"
+import cors from "cors";
 
 const app = express();
 const PORT = "8080";
 
 // jsonを扱う
 app.use(express.json());
+
+// cors allow 設定
+app.use(cors({
+    origin:"http://localhost:3000"
+}))
 
 // API 集約されたルーターを読み込む
 app.use("/api", apiRoutes);
